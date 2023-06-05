@@ -69,6 +69,7 @@ import getDayMonthYear from '../helpers/getDayMonthYear'
 import uploadImage from '../helpers/uploadImage'
 
 export default {
+    name: 'EntryView',
     props: {
         id: {
             type: String,
@@ -124,7 +125,7 @@ export default {
         },
         async saveEntry() {
 
-            new Swal({
+            Swal.fire({
                 title: 'Espere por favor',
                 allowOutsideClick: false
             })
@@ -132,7 +133,7 @@ export default {
 
             const picture = await uploadImage( this.file )
 
-            this.entry.picture = picture
+            this.entry.picture = picture.secure_url
             
             if( this.entry.id ) {
                 //actualizar
@@ -153,7 +154,7 @@ export default {
 
         },
         async onDeleteEntry() {
-
+            console.log('Se llamo aqui')
             const { isConfirmed } = await Swal.fire({
                 title: '¿Está seguro?',
                 text: 'Una vez borrado, no se puede recuperar',
@@ -162,16 +163,19 @@ export default {
 
             })
 
-            if( isConfirmed ) {
+            console.log({isConfirmed})
 
-                new Swal({
+            if( isConfirmed ) {
+                Swal.fire({
                     title: 'Espere por favor',
                     allowOutsideClick: false
                 })
 
                 Swal.showLoading()
 
-                await this.deleteEntry( this.entry.id )
+                console.log('A punto de eliminar!')
+
+                // await this.deleteEntry( this.entry.id )
 
                 this.$router.push({ name: 'no-entry' })
 

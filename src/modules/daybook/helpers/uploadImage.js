@@ -15,7 +15,7 @@ const uploadImage = async ( file ) => {
 
         console.log(data)
 
-        return data.secure_url
+        return data
 
     } catch (error) {
 

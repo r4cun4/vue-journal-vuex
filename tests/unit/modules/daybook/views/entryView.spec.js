@@ -3,7 +3,7 @@ import { createStore } from 'vuex'
 
 import Swal from 'sweetalert2'
 
-import journal from '@/modules/daybook/store/journal'
+import journalModule from '@/modules/daybook/store/journal'
 import { journalState } from '../../../mock-data/test-journal-state'
 
 import EntryView from '@/modules/daybook/views/EntryView'
@@ -12,7 +12,7 @@ const createVuexStore = ( initialState ) =>
     createStore({
         modules: {
             journalModule: {
-                ...journal,
+                ...journalModule,
                 state: { ...initialState }
             }
         }

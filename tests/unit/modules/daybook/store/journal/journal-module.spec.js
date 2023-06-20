@@ -1,24 +1,39 @@
 
 import { createStore } from 'vuex'
-import journal from '@/modules/daybook/store/journal'
+import journalModule from '@/modules/daybook/store/journal'
 import { journalState } from '../../../../mock-data/test-journal-state'
+
+import authApi from '@/api/authApi'
 
 const createVuexStore = ( initialState ) =>
     createStore({
         modules: {
             journalModule: {
-                ...journal,
+                ...journalModule,
                 state: { ...initialState }
             }
         }
     })
 
 describe('Vuex - Pruebas en el Journal Module', () => {
+
+    beforeAll( async() => {
+
+        const { data } = await authApi.post(':signInWithPassword', {
+            email: 'test@test.com',
+            password: '123456',
+            returnSecureToken: true
+        })
+
+        localStorage.setItem( 'idToken', data.idToken )
+
+    })
+
     // Basicas
     test('este es el estado inicial, debe de tener este state', () => {
 
         const store = createVuexStore( journalState )
-        const { isLoading, entries } = store.state.journal
+        const { isLoading, entries } = store.state.journalModule
         
         expect( isLoading ).toBeFalsy()
         expect( entries ).toEqual( journalState.entries )
@@ -31,10 +46,10 @@ describe('Vuex - Pruebas en el Journal Module', () => {
 
         const store = createVuexStore({ isLoading: true, entries: [] })
 
-        store.commit('journal/setEntries', journalState.entries)
+        store.commit('journalModule/setEntries', journalState.entries)
 
-        expect( store.state.journal.entries.length ).toBe(2)
-        expect( store.state.journal.isLoading ).toBeFalsy()
+        expect( store.state.journalModule.entries.length ).toBe(2)
+        expect( store.state.journalModule.isLoading ).toBeFalsy()
 
     })
 
@@ -48,11 +63,11 @@ describe('Vuex - Pruebas en el Journal Module', () => {
             text: "Lola te amo"
         }
 
-        store.commit( 'journal/updateEntry', updatedEntry )
+        store.commit( 'journalModule/updateEntry', updatedEntry )
 
-        const storeEntries = store.state.journal.entries 
+        const storeEntries = store.state.journalModule.entries 
 
-        expect( store.state.journal.entries.length ).toBe(2)
+        expect( store.state.journalModule.entries.length ).toBe(2)
         expect(
             storeEntries.find( e => e.id === updatedEntry.id )
         )
@@ -64,16 +79,16 @@ describe('Vuex - Pruebas en el Journal Module', () => {
 
         const store = createVuexStore( journalState )
 
-        store.commit('journal/addEntry', { id: 'ABC-123', text: 'Hola Mundo' })
+        store.commit('journalModule/addEntry', { id: 'ABC-123', text: 'Hola Mundo' })
 
-        const stateEntries = store.state.journal.entries
+        const stateEntries = store.state.journalModule.entries
 
         expect( stateEntries.length ).toBe(3)
         expect( stateEntries.find( e => e.id === 'ABC-123') ).toBeTruthy()
 
-        store.commit('journal/deleteEntry', 'ABC-123')
-        expect( store.state.journal.entries.length ).toBe(2)
-        expect( store.state.journal.entries.find( e => e.id === 'ABC-123') ).toBeFalsy()
+        store.commit('journalModule/deleteEntry', 'ABC-123')
+        expect( store.state.journalModule.entries.length ).toBe(2)
+        expect( store.state.journalModule.entries.find( e => e.id === 'ABC-123') ).toBeFalsy()
     })
 
     // Getters
@@ -83,11 +98,11 @@ describe('Vuex - Pruebas en el Journal Module', () => {
 
         const [ entry1, entry2 ] = journalState.entries
 
-        expect( store.getters['journal/getEntriesByTerm']('').length).toBe(2)
+        expect( store.getters['journalModule/getEntriesByTerm']('').length).toBe(2)
 
-        expect( store.getters['journal/getEntriesByTerm']('sarasa') ).toEqual([ entry2 ])
+        expect( store.getters['journalModule/getEntriesByTerm']('sarasa') ).toEqual([ entry2 ])
 
-        expect( store.getters['journal/getEntriesById']('-NPSw_XMR-dMQr7gfm0g') ).toEqual( entry1 )
+        expect( store.getters['journalModule/getEntriesById']('-NPSw_XMR-dMQr7gfm0g') ).toEqual( entry1 )
 
     })
 
@@ -96,9 +111,9 @@ describe('Vuex - Pruebas en el Journal Module', () => {
 
         const store = createVuexStore({ isLoading: true, entries: [] })
 
-        await store.dispatch('journal/loadEntries')
+        await store.dispatch('journalModule/loadEntries')
 
-        expect( store.state.journal.entries.length ).toBe(2)
+        expect( store.state.journalModule.entries.length ).toBe(2)
 
 
     })
@@ -115,11 +130,11 @@ describe('Vuex - Pruebas en el Journal Module', () => {
             otroMas: { a:1 }
         }
 
-        await store.dispatch('journal/updateEntry', updatedEntry)
+        await store.dispatch('journalModule/updateEntry', updatedEntry)
 
-        expect( store.state.journal.entries.length ).toBe(2)
+        expect( store.state.journalModule.entries.length ).toBe(2)
         expect(
-            store.state.journal.entries.find( e => e.id === updatedEntry.id )
+            store.state.journalModule.entries.find( e => e.id === updatedEntry.id )
             ).toEqual({
                 id: '-NPSw_XMR-dMQr7gfm0g',
                 date: 1677687142190,

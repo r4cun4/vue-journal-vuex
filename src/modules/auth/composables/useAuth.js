@@ -7,25 +7,25 @@ const useAuth = () => {
 
     const createUser = async( user ) => {
         
-        const resp = await store.dispatch('authModule/createUser', user)
+        const resp = await store.dispatch('auth/createUser', user)
         return resp
     }
 
     const loginUser = async ( user ) => {
 
-        const resp = await store.dispatch('authModule/signInUser', user)
+        const resp = await store.dispatch('auth/signInUser', user)
         return resp
 
     }
 
     const checkAuthStatus = async() => {
-        const resp = await store.dispatch('authModule/checkAuthentication')
+        const resp = await store.dispatch('auth/checkAuthentication')
         return resp
     }
 
     const logout = () => {
-        store.commit('authModule/logout')
-        store.commit('journalModule/clearEntries')
+        store.commit('auth/logout')
+        store.commit('journal/clearEntries')
     }
 
     return {
@@ -34,8 +34,8 @@ const useAuth = () => {
         checkAuthStatus,
         logout,
 
-        authStatus: computed(() => store.getters['authModule/currentState']),
-        username: computed(() => store.getters['authModule/username'])
+        authStatus: computed(() => store.getters['auth/currentState']),
+        username: computed(() => store.getters['auth/username'])
     }
 }
 

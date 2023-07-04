@@ -7,8 +7,8 @@ const mockStore = {
     commit: jest.fn(),
     // Los getters son un objeto
     getters: {
-        'authModule/currentState': 'authenticated',
-        'authModule/username': 'Rodrigo'
+        'auth/currentState': 'authenticated',
+        'auth/username': 'Rodrigo'
     }
 }
 
@@ -29,7 +29,7 @@ describe('Pruebas en useAuth', () => {
 
         const resp = await createUser( newUser )
 
-        expect(mockStore.dispatch).toHaveBeenCalledWith("authModule/createUser", {"email": "rodrigo@gmail.com", "name": "Rodrigo"})
+        expect(mockStore.dispatch).toHaveBeenCalledWith("auth/createUser", {"email": "rodrigo@gmail.com", "name": "Rodrigo"})
         expect(resp).toEqual({ ok: true })
 
     })
@@ -43,7 +43,7 @@ describe('Pruebas en useAuth', () => {
 
         const resp = await createUser( newUser )
 
-        expect(mockStore.dispatch).toHaveBeenCalledWith("authModule/createUser", newUser)
+        expect(mockStore.dispatch).toHaveBeenCalledWith("auth/createUser", newUser)
         expect(resp).toEqual({ ok: false, message: 'EMAIL_EXISTS' })
 
     })
@@ -57,7 +57,7 @@ describe('Pruebas en useAuth', () => {
 
         const resp = await loginUser( loginForm )
 
-        expect(mockStore.dispatch).toHaveBeenCalledWith("authModule/signInUser", loginForm)
+        expect(mockStore.dispatch).toHaveBeenCalledWith("auth/signInUser", loginForm)
         expect(resp).toEqual({ ok: true })
 
     })
@@ -71,7 +71,7 @@ describe('Pruebas en useAuth', () => {
 
         const resp = await loginUser( loginForm )
 
-        expect(mockStore.dispatch).toHaveBeenCalledWith("authModule/signInUser", loginForm)
+        expect(mockStore.dispatch).toHaveBeenCalledWith("auth/signInUser", loginForm)
         expect(resp).toEqual({ ok: false, message: 'EMAIL/PASSWORD do not exist' })
 
     })
@@ -84,7 +84,7 @@ describe('Pruebas en useAuth', () => {
 
         const resp = await checkAuthStatus()
 
-        expect(mockStore.dispatch).toHaveBeenCalledWith("authModule/checkAuthentication")
+        expect(mockStore.dispatch).toHaveBeenCalledWith("auth/checkAuthentication")
         expect(resp).toEqual({ ok: true })
 
     })
@@ -95,8 +95,8 @@ describe('Pruebas en useAuth', () => {
 
         logout()
 
-        expect(mockStore.commit).toHaveBeenCalledWith('authModule/logout')
-        expect(mockStore.commit).toHaveBeenCalledWith('journalModule/clearEntries')
+        expect(mockStore.commit).toHaveBeenCalledWith('auth/logout')
+        expect(mockStore.commit).toHaveBeenCalledWith('journal/clearEntries')
 
     })
 
